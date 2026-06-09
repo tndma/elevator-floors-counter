@@ -66,3 +66,46 @@ def validate_input(sequence: str) -> str:
                 f"Допустимы только '1' и '2'."
             )
     return sequence
+
+def simulate_elevator(sequence: str) -> tuple[int, int]:
+    """
+    Модуль симуляции движения лифта: отслеживает минимальную
+    и максимальную относительную позицию.
+
+    Алгоритм:
+        1. Начать с позиции 0 (относительная начальная позиция Дилли).
+        2. Для каждой кнопки в последовательности:
+           - '1' → current += 1 (подъём)
+           - '2' → current -= 1 (спуск)
+        3. Обновить min_pos и max_pos.
+
+    Вход:
+        sequence (str): проверенная строка нажатий ('1' и '2').
+
+    Выход:
+        tuple[int, int]: (min_pos, max_pos) — диапазон пройденных позиций.
+
+    Примеры:
+        >>> simulate_elevator("11")
+        (0, 2)
+        >>> simulate_elevator("21212")
+        (-1, 0)
+        >>> simulate_elevator("1221221221221")
+        (-4, 1)
+    """
+    current_pos: int = 0
+    min_pos: int = 0
+    max_pos: int = 0
+
+    for button in sequence:
+        if button == '1':
+            current_pos += 1
+        else:                        # button == '2'
+            current_pos -= 1
+
+        if current_pos < min_pos:
+            min_pos = current_pos
+        if current_pos > max_pos:
+            max_pos = current_pos
+
+    return min_pos, max_pos
