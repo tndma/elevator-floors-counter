@@ -109,3 +109,84 @@ def simulate_elevator(sequence: str) -> tuple[int, int]:
             max_pos = current_pos
 
     return min_pos, max_pos
+
+def calculate_floors(min_pos: int, max_pos: int) -> int:
+    """
+    Модуль вычисления: определяет количество этажей по диапазону позиций.
+
+    Формула:
+        количество этажей = max_pos - min_pos + 1
+
+    Обоснование:
+        Поскольку лифт никогда не опускается ниже 1-го этажа
+        и не поднимается выше последнего, диапазон пройденных
+        относительных позиций точно соответствует диапазону этажей.
+
+    Вход:
+        min_pos (int): наименьшая достигнутая относительная позиция.
+        max_pos (int): наибольшая достигнутая относительная позиция.
+
+    Выход:
+        int: количество этажей в доме (>= 1).
+
+    Примеры:
+        >>> calculate_floors(0, 2)
+        3
+        >>> calculate_floors(-1, 0)
+        2
+        >>> calculate_floors(-4, 1)
+        6
+    """
+    return max_pos - min_pos + 1
+
+
+def count_floors(sequence: str) -> int:
+    """
+    Главная функция: определяет количество этажей по последовательности
+    нажатий кнопок лифта.
+
+    Архитектура (конвейерная):
+        validate_input → simulate_elevator → calculate_floors
+
+    Вход:
+        sequence (str): строка нажатий ('1' и '2').
+
+    Выход:
+        int: количество этажей в доме.
+
+    Исключения:
+        ValueError: если входная строка некорректна.
+
+    Примеры (чёрный ящик):
+        >>> count_floors("11")
+        3
+        >>> count_floors("21212")
+        2
+        >>> count_floors("1221221221221")
+        6
+        >>> count_floors("1")
+        2
+        >>> count_floors("2")
+        2
+    """
+    validated_sequence = validate_input(sequence)
+    min_pos, max_pos = simulate_elevator(validated_sequence)
+    return calculate_floors(min_pos, max_pos)
+
+
+def main() -> None:
+    """
+    Точка входа программы: читает ввод, запускает вычисление, выводит результат.
+    """
+    try:
+        sequence = input("Введите последовательность нажатий (символы 1 и 2): ").strip()
+        result = count_floors(sequence)
+        print(f"Количество этажей в доме: {result}")
+    except ValueError as error:
+        print(f"Ошибка входных данных: {error}")
+    except EOFError:
+        print("Ошибка: входные данные не получены.")
+
+
+if __name__ == "__main__":
+    main()
