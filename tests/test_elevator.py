@@ -115,7 +115,6 @@ class TestSimulateElevator(unittest.TestCase):
         min_p, max_p = simulate_elevator("1")
         self.assertEqual(min_p, 0)   # начальная позиция = 0
 
-
 # ─────────────────────────────────────────────────────────────────────────────
 # ТЕСТЫ «БЕЛОГО ЯЩИКА» — модуль calculate_floors
 # ─────────────────────────────────────────────────────────────────────────────
@@ -143,3 +142,70 @@ class TestCalculateFloors(unittest.TestCase):
 
     def test_large_range(self):
         self.assertEqual(calculate_floors(0, 99), 100)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ТЕСТЫ «ЧЁРНОГО ЯЩИКА» — count_floors (интеграционные)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestCountFloors(unittest.TestCase):
+    """Тесты «чёрного ящика» для count_floors."""
+
+    # --- Примеры из условия ---
+    def test_given_example_1(self):
+        self.assertEqual(count_floors("11"), 3)
+
+    def test_given_example_2(self):
+        self.assertEqual(count_floors("21212"), 2)
+
+    def test_given_example_3(self):
+        self.assertEqual(count_floors("1221221221221"), 6)
+
+    # --- Граничные случаи ---
+    def test_single_up(self):
+        self.assertEqual(count_floors("1"), 2)
+
+    def test_single_down(self):
+        self.assertEqual(count_floors("2"), 2)
+
+    def test_max_length_all_up(self):
+        self.assertEqual(count_floors("1" * 100), 101)
+
+    # --- Дополнительные тесты ---
+    def test_three_floors_simple(self):
+        self.assertEqual(count_floors("1122"), 3)
+
+    def test_two_floors_alternating(self):
+        self.assertEqual(count_floors("1212"), 2)
+
+    def test_zigzag_up(self):
+        self.assertEqual(count_floors("11211"), 4)
+
+    def test_explore_both_directions(self):
+        self.assertEqual(count_floors("11222"), 4)
+
+    def test_deep_descent(self):
+        self.assertEqual(count_floors("22222"), 6)
+
+    def test_two_floors_only(self):
+        self.assertEqual(count_floors("12"), 2)
+
+    def test_up_down_up(self):
+        self.assertEqual(count_floors("121"), 2)
+
+    # --- Некорректный ввод ---
+    def test_invalid_empty(self):
+        with self.assertRaises(ValueError):
+            count_floors("")
+
+    def test_invalid_bad_char(self):
+        with self.assertRaises(ValueError):
+            count_floors("1231")
+
+    def test_invalid_too_long(self):
+        with self.assertRaises(ValueError):
+            count_floors("1" * 101)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
